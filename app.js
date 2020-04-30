@@ -21,10 +21,16 @@ program
 			throw new Error(`Can't find file ${name}`);
 		}
 
+		let subProc;
 		const startProgram = debounce(() => {
+
+			if (subProc) {
+				subProc.kill();
+			}
+			console.log(`>>>>> Starting Up The Program, Please hold on...`)
 			// When startProgram is called, execute the file. The third argument(object) tells it to log all the
 			// to the parrent program
-			spawn('node', [name], { stdio: 'inherit' });
+			subProc = spawn('node', [name], { stdio: 'inherit' });
 		}, 1000);
 
 		// Watch the current directory
