@@ -4,6 +4,7 @@ const chokidar = require('chokidar');
 const debounce = require('lodash.debounce');
 const program = require('caporal');
 const fs = require('fs');
+const colors = require('colors');
 const { spawn } = require('child_process');
 const readline = require('readline');
 const rl = readline.createInterface({
@@ -17,29 +18,26 @@ program
 	.argument('[filename]', `Name Of The File To Execute`)
 	.action(() => {
 
-		rl.question(`Please input the name of your root file      `, async (filename) => {
+		rl.question(`Please input the name of your root file      `.cyan.bold, async (filename) => {
 
-			console.log(filename);
 			const name = filename || 'app.js';
-			console.log(name);
+			rl.pause();  
 
-			rl.pause();
-			
 			try {  
 			// Checks if the file exists on the users macjine
 				await fs.promises.access(name);
 			}
 			catch(err) {
-				throw new Error(`Can't find file ${name}`);
+				throw new Error(`Can't find file ${name}`).bold.red;
 			}
 
 			let subProc;
 			const startProgram = debounce(() => {
 
-				if (subProc) {
+				if (subProc) {     
 					subProc.kill();
 				}
-				console.log(`>>>>> Starting Up The Program, Please hold on...`)
+				console.log(`>>>>> Starting Up The Program, Please hold on...`.blue.bold.underline);
 				// When startProgram is called, execute the file. The third argument(object) tells it to log all the
 				// to the parent process
 				subProc = spawn('node', [name], { stdio: 'inherit' });
